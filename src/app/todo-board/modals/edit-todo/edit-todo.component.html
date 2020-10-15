@@ -1,0 +1,188 @@
+<div class="container-fluid">
+  <h2 mat-dialog-title class="modal-title mb-3">Task-{{ data.todoId }}</h2>
+  <mat-card class="card mt-3">
+    <mat-dialog-content class="mat-typography">
+      <form #form="ngForm" novalidate (ngSubmit)="updateTask(form)">
+        <div
+          fxLayout="column"
+          fxLayoutAlign="space-around stretch"
+          fxLayoutGap="2%"
+        >
+          <div
+            fxLayout="{{ isMobile() ? 'column' : 'row' }}"
+            fxLayoutAlign="space-between center"
+          >
+            <mat-form-field appearance="fill">
+              <mat-label>Issue Type</mat-label>
+              <mat-select
+                [disabled]="!isAllowedToEdit()"
+                [(ngModel)]="data.issueType"
+                name="issueType"
+              >
+                <mat-option *ngFor="let item of todoIssueTypes" [value]="item">
+                  {{ item }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+              <mat-label>Status</mat-label>
+              <mat-select
+                [disabled]="!isAllowedToEdit()"
+                [(ngModel)]="data.status"
+                name="status"
+              >
+                <mat-option *ngFor="let item of todoStatuses" [value]="item">
+                  {{ item }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field class="full-width-input">
+            <mat-label>Summary</mat-label>
+            <input
+              required
+              [disabled]="!isAllowedToEdit()"
+              matInput
+              [(ngModel)]="data.summary"
+              minlength="2"
+              maxlength="255"
+              name="summary"
+              #summary="ngModel"
+              type="text"
+            />
+            <mat-hint>type a task summary</mat-hint>
+            <ng-container *ngIf="summary.touched && !summary.valid">
+              <mat-error *ngIf="summary.errors.required">
+                Task summary is required
+              </mat-error>
+              <mat-error *ngIf="summary.errors.minlength">
+                Task summary should be minimum
+                {{ summary.errors.minlength.requiredLength }} characters
+              </mat-error>
+              <mat-error *ngIf="summary.errors.maxlength">
+                Task summary should be maximum
+                {{ summary.errors.maxlength.requiredLength }} characters
+              </mat-error>
+            </ng-container>
+          </mat-form-field>
+
+          <mat-label>Description</mat-label>
+          <ng-container *ngIf="description.touched && !description.valid">
+            <mat-error *ngIf="description.errors.required">
+              Task description is required
+            </mat-error>
+            <mat-error *ngIf="description.errors.minlength">
+              Task description should be minimum
+              {{ description.errors.minlength.requiredLength }} characters
+            </mat-error>
+            <mat-error *ngIf="description.errors.maxlength">
+              Task description should be maximum
+              {{ description.errors.maxlength.requiredLength }} characters
+            </mat-error>
+          </ng-container>
+          <quill-editor
+            required
+            [disabled]="!isAllowedToEdit()"
+            [styles]="{ height: '250px' }"
+            minlength="2"
+            maxlength="10000"
+            [modules]="modules"
+            [(ngModel)]="data.description"
+            #description="ngModel"
+            name="description"
+          ></quill-editor>
+
+          <div
+            fxLayout="{{ isMobile() ? 'column' : 'row' }}"
+            fxLayoutAlign="space-between center"
+          >
+            <mat-form-field appearance="fill">
+              <mat-label>Severity</mat-label>
+              <mat-select
+                [disabled]="!isAllowedToEdit()"
+                [(ngModel)]="data.severity"
+                name="severity"
+              >
+                <mat-option *ngFor="let item of todoSeverities" [value]="item">
+                  {{ item }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <button
+              type="button"
+              mat-fab
+              color="primary"
+              class="mb-4"
+              (click)="updateFavorites()"
+            >
+              <mat-icon
+                aria-hidden="false"
+                color="primary"
+                matTooltip=" {{
+                  isFavorite() ? 'remove from favorites' : 'mark as favorite'
+                }} "
+                >{{ isFavorite() ? "favorite" : "favorite_border" }}</mat-icon
+              >
+            </button>
+
+            <mat-form-field appearance="fill">
+              <mat-label>Priority</mat-label>
+              <mat-select
+                [disabled]="!isAllowedToEdit()"
+                [(ngModel)]="data.priority"
+                name="priority"
+              >
+                <mat-option *ngFor="let item of todoPriorities" [value]="item">
+                  {{ item }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div
+            class="mt-4 mx-3"
+            fxLayout="row"
+            fxLayoutAlign="space-evenly center"
+          >
+            <button
+              mat-raised-button
+              color="accent"
+              [mat-dialog-close]="1"
+              (click)="closeModal()"
+              class="mx-1"
+            >
+              Close {{ !isMobile() ? "Modal" : "" }}
+            </button>
+            <button
+              
+              mat-raised-button
+              color="primary"
+              [disabled]="!form.valid || !isAllowedToEdit()"
+            >
+              Update {{ !isMobile() ? "Task" : "" }}
+              <mat-icon *ngIf="isLoading"
+                ><mat-spinner mode="indeterminate" diameter="21"> </mat-spinner
+              ></mat-icon>
+            </button>
+
+            <button
+              type="button"
+              mat-raised-button
+              color="primary"
+              [disabled]="!isAllowedToEdit()"
+              (click)="deleteTask()"
+            >
+              Delete {{ !isMobile() ? "Task" : "" }}
+              <mat-icon *ngIf="isLoading"
+                ><mat-spinner mode="indeterminate" diameter="21"> </mat-spinner
+              ></mat-icon>
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-dialog-content>
+  </mat-card>
+</div>

@@ -1,0 +1,183 @@
+<div
+  *ngIf="!isMobileFilters(); else mobileFilters"
+  fxLayout="row"
+  fxLayoutAlign="space-around center"
+>
+  <mat-form-field floatPlaceholder="never" color="primary" class="mr-3">
+    <input
+      matInput
+      type="text"
+      name="search"
+      [(ngModel)]="term"
+      autocomplete="off"
+      placeholder="Filter Tasks"
+    />
+  </mat-form-field>
+
+  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="2%">
+    <button
+      mat-raised-button
+      color="primary"
+      class="filter-btn"
+      (click)="showFavoriteTasks()"
+    >
+      My favorite tasks
+    </button>
+
+    <button
+      mat-raised-button
+      color="primary"
+      class="filter-btn"
+      (click)="showAllTasks()"
+    >
+      Show all tasks
+    </button>
+  </div>
+
+  <button mat-raised-button color="primary" class="mt-2" (click)="createTodo()">
+    Create Task
+  </button>
+</div>
+<ng-template #mobileFilters>
+  <div fxLayout="column" fxLayoutAlign="space-around center" fxLayoutGap="2%">
+    <div fxLayout="row" fxLayoutAlign="space-around center">
+      <mat-form-field floatPlaceholder="never" color="primary" class="mr-3">
+        <input
+          matInput
+          type="text"
+          name="search"
+          [(ngModel)]="term"
+          autocomplete="off"
+          placeholder="Filter Tasks"
+        />
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="mt-2"
+        (click)="createTodo()"
+      >
+        Create Task
+      </button>
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="space-around center" class="my-2">
+      <button
+        mat-raised-button
+        color="primary"
+        class="filter-btn"
+        (click)="showFavoriteTasks()"
+      >
+        My favorite tasks
+      </button>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="filter-btn"
+        (click)="showAllTasks()"
+      >
+        Show all tasks
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<div cdkDropListGroup>
+  <div *ngFor="let key of todoKeys" class="column-container">
+    <p class="column-title" matTooltip="{{ key }}">
+      {{ getColumnName(key) + " " + todosMap.get(key).length }}
+    </p>
+
+    <div
+      cdkDropList
+      #[key]="cdkDropList"
+      [cdkDropListData]="todosMap.get(key)"
+      [cdkDropListConnectedTo]="key"
+      class="tasks-list mb-2 ml-2 bg-light"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <mat-card
+        class="task-box mb-1"
+        *ngFor="let item of todosMap.get(key) | filter: term"
+        cdkDrag
+        [cdkDragData]="item"
+        (click)="editTodo(item)"
+      >
+        <div class="row no-gutters">
+          <div
+            [ngClass]="getClassBySeverity(item.severity)"
+            class="col-custom-1"
+          ></div>
+          <div class="col">
+            <div class="row">
+              <div class="col-12" matTooltip="{{ item.summary }}">
+                {{ getShortTaskSummary(item.summary) }}
+              </div>
+              <div
+                fxLayout="row"
+                fxLayoutAlign="space-around center"
+                class="col-12 my-1"
+              >
+                <mat-icon
+                  aria-hidden="false"
+                  color="primary"
+                  matTooltip="{{ item.issueType }}"
+                  >{{ getIconNameByIssueType(item.issueType) }}</mat-icon
+                >
+                <mat-icon
+                  aria-hidden="false"
+                  matTooltip="{{ item.priority }} priority"
+                  [ngClass]="getClassByPriority(item.priority)"
+                  >arrow_upward</mat-icon
+                >
+
+                <mat-icon
+                  aria-hidden="false"
+                  color="primary"
+                  matTooltip=" {{
+                    isFavorite(item) ? 'favorite' : 'unfavorite'
+                  }} "
+                  >{{
+                    isFavorite(item) ? "favorite" : "favorite_border"
+                  }}</mat-icon
+                >
+
+                <div>
+                  <ngx-avatar
+                    *ngIf="item.reporter.avatarUrl; else noAvatarTaskBox"
+                    size="22"
+                    [round]="true"
+                    [src]="item.reporter.avatarUrl"
+                    matTooltip="{{
+                      item.reporter.firstName + ' ' + item.reporter.lastName
+                    }}"
+                  >
+                  </ngx-avatar>
+
+                  <ng-template #noAvatarTaskBox>
+                    <ngx-avatar
+                      name="{{
+                        item.reporter.firstName + ' ' + item.reporter.lastName
+                      }}"
+                      size="22"
+                      [style]="{ fontSize: '100%' }"
+                      [round]="true"
+                      matTooltip="{{
+                        item.reporter.firstName + ' ' + item.reporter.lastName
+                      }}"
+                    ></ngx-avatar>
+                  </ng-template>
+                </div>
+              </div>
+              <div class="col-12">
+                {{ "task-" + item.todoId }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div>

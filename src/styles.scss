@@ -1,0 +1,77 @@
+@import "~bootstrap/scss/bootstrap";
+@import "~ngx-toastr/toastr";
+
+@import "~quill/dist/quill.core.css";
+@import "~quill/dist/quill.bubble.css";
+@import "~quill/dist/quill.snow.css";
+@import "~quill-emoji/dist/quill-emoji.css";
+
+$fa-font-path: "../node_modules/font-awesome/fonts";
+@import "../node_modules/font-awesome/scss/font-awesome.scss";
+
+@import "https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap";
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";
+
+@import "~@angular/material/theming";
+@include mat-core();
+
+$primary: mat-palette($mat-amber, 500);
+$accent: mat-palette($mat-pink, A200, A100, A400);
+$background-color: map_get($mat-amber, A100);
+
+$candy-app-warn: mat-palette($mat-red);
+
+$theme: mat-light-theme($primary, $accent);
+
+$background: map-get($theme, background);
+$background: map_merge(
+  $background,
+  (
+    background: $background-color,
+  )
+);
+$theme: map_merge(
+  $theme,
+  (
+    background: $background,
+  )
+);
+
+@include angular-material-theme($theme);
+
+$primary-button: mat-palette($mat-amber, A100);
+
+$accent-button: mat-palette($mat-pink, A200, A100, A400);
+$theme-button: mat-light-theme($primary-button, $accent-button);
+
+@include mat-button-theme($theme-button);
+
+$headerColor: #ffc107;
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.modal-title {
+  text-align: center;
+  font-weight: 500;
+  color: #fff;
+  padding: 0.5%;
+  width: 100%;
+  margin: 0 5%;
+  margin-bottom: 1%;
+  border-radius: 6px;
+  background-color: $headerColor;
+  background: radial-gradient(circle, $headerColor 77%, #ffe57f 100%);
+}
+
+@media (min-width: 768px) {
+  mat-card {
+    width: fit-content;
+  }
+}
