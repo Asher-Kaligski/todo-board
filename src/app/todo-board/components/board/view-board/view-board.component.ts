@@ -88,6 +88,7 @@ export class ViewBoardComponent implements OnInit, OnDestroy {
         queryParams: { reporter: 'all' },
       });
     } else {
+      this.todosMap.clear();
       this.initTodosMap();
     }
   }
